@@ -56,9 +56,8 @@ public class SqlInjectionLesson5a extends AssignmentEndpoint {
 
     protected AttackResult injectableQuery(String accountName) {
         String query = "SELECT * FROM user_data WHERE first_name = 'John' and last_name = ?";
-        try (Connection connection = dataSource.getConnection()) {
-           
-            try (PreparedStatement statement= connection.prepareStatement(query)) {
+        try (Connection connection = dataSource.getConnection(),PreparedStatement statement= connection.prepareStatement(query)) {
+          
                 statement.setString(1,accountName);
                 ResultSet results = statement.executeQuery(query);
 
@@ -78,12 +77,14 @@ public class SqlInjectionLesson5a extends AssignmentEndpoint {
                 } else {
                     return failed(this).feedback("sql-injection.5a.no.results").output("Your query was: " + query).build();
                 }
-            } catch (SQLException sqle) {
-                return failed(this).output(sqle.getMessage() + "<br> Your query was: " + query).build();
-            }
-        } catch (Exception e) {
-            return failed(this).output(this.getClass().getName() + " : " + e.getMessage() + "<br> Your query was: " + query).build();
-        }
+            
+        } catch (Exception e | SQLException sqle) {
+	    if (e) {
+            	return failed(this).output(this.getClass().getName() + " : " + e.getMessage() + "<br> Your query was: " + query).build();
+	    } else {
+		return failed(this).output(sqle.getMessage() + "<br> Your query was: " + query).build();
+	}
+
     }
 
     public static String writeTable(ResultSet results, ResultSetMetaData resultsMetaData) throws SQLException {
