@@ -79,13 +79,13 @@ public class SqlInjectionLesson5a extends AssignmentEndpoint {
                 }
             
         } catch (Exception e | SQLException sqle) {
-	    if (e) {
-            	return failed(this).output(this.getClass().getName() + " : " + e.getMessage() + "<br> Your query was: " + query).build();
-	    } else {
-		return failed(this).output(sqle.getMessage() + "<br> Your query was: " + query).build();
-	}
-
+            if (e) {
+                    return failed(this).output(this.getClass().getName() + " : " + e.getMessage() + "<br> Your query was: " + query).build();
+            } else {
+                    return failed(this).output(sqle.getMessage() + "<br> Your query was: " + query).build();
+            }
     }
+  }
 
     public static String writeTable(ResultSet results, ResultSetMetaData resultsMetaData) throws SQLException {
         int numColumns = resultsMetaData.getColumnCount();
